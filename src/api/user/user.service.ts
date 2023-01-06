@@ -67,7 +67,7 @@ export class UserService extends CrudService<UserEntity> {
   }
 
   async findAllUser(qs: QueryStringUserDto) {
-    const { limit, orderby, page, startDate, endDate, search } = qs;
+    const { getOffset, limit, orderby, page, startDate, endDate, search } = qs;
     const [users, total] = await this.repository
       .createQueryBuilder('user')
       .where('user.isDelete = :isDelete', { isDelete: false })
@@ -87,7 +87,7 @@ export class UserService extends CrudService<UserEntity> {
           }
         }),
       )
-      .skip((page - 1) * limit)
+      .skip(getOffset)
       .take(limit)
       .orderBy('id', orderby || 'DESC')
       .getManyAndCount();

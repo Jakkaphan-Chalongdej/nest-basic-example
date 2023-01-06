@@ -45,6 +45,8 @@ export class PaginationQueryString {
   @Transform(({ value }) => value.toUpperCase())
   @IsIn([OrderBy.ASC, OrderBy.DESC])
   orderby?: OrderBy = OrderBy.ASC;
+
+  getOffset: number = (this.page - 1) * this.limit;
 }
 
 export class SearchQueryStringDto extends PaginationQueryString {

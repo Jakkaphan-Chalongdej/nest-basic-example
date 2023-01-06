@@ -9,6 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '@Shared/http-exception';
 import { TransformInterceptor } from '@Shared/http-interception';
 import { basicMiddleware } from '@Shared/middleware/basic.middleware';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -37,6 +38,12 @@ async function bootstrap() {
   app.use(morgan('tiny'));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      disableErrorMessages: config.get<boolean>('app.isProduction'),
+      transform: true,
+    }),
+  );
   app.set('trust proxy', 1);
   app.use(json({ limit: '15mb' }));
   app.enableCors({
